@@ -1,0 +1,9 @@
+.rtl {
+  text-align: right;
+}
+
+.rtl-image {
+  float: right !important;
+  margin-left: 16px;
+  margin-right: 0px;
+}

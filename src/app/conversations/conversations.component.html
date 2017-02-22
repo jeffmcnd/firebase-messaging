@@ -1,0 +1,12 @@
+<div *ngIf="user">
+  <ul class="mdl-list">
+    <li class="mdl-list__item mdl-list__item--two-line" *ngFor="let convo of convos">
+      <span class="mdl-list__item-primary-content">
+        <img class="mdl-list__item-avatar" [src]="convo.imageUrl" style="width: 48px; height: 48px;"/>
+        <span>{{ convo.lastMessage }}</span>
+        <span class="mdl-list__item-sub-title">{{ convo.timestamp | date:'h:mm:ss a MMMM d, y' }}</span>
+      </span>
+      <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent" routerLink="/messages/{{ convo.uid }}">Chat</button>
+    </li>
+  </ul>
+</div>

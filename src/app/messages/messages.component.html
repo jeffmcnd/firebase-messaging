@@ -1,0 +1,21 @@
+<div *ngIf="user">
+  <ul class="mdl-list" style="overflow: scroll; max-height: calc(100vh - 240px);">
+    <li class="mdl-list__item mdl-list__item--two-line" *ngFor="let message of messages">
+      <img *ngIf="message.imageUrl" [src]="message.imageUrl" style="height: 64px;"/>
+      <span class="mdl-list__item-primary-content" [ngClass]="{'rtl': message.uid === uid}">
+        <img class="mdl-list__item-avatar" [ngClass]="{'rtl-image': message.uid === uid}" [src]="getImage(message.uid)" style="width: 48px; height: 48px;"/>
+        <span>{{ message.message }}</span>
+        <span class="mdl-list__item-sub-title">{{ getName(message.uid) }}</span>
+      </span>
+    </li>
+  </ul>
+  <input type="file" (change)="readUrl($event)">
+  <button class="mdl-button" (click)="push()">Send</button>
+  <form (ngSubmit)="send(message.value); message.value=''">
+    <div class="mdl-textfield mdl-js-textfield">
+      <input class="mdl-textfield__input" type="text" id="sendMessageInput" #message>
+      <label class="mdl-textfield__label" for="sendMessageInput">Message...</label>
+    </div>
+    <button class="mdl-button" type="submit">Send</button>
+  </form>
+</div>
