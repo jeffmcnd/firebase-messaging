@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router }            from '@angular/router';
 
 import { User }              from './user';
@@ -16,7 +16,7 @@ export class UsersComponent implements OnInit {
   users: User[];
   usersRef: firebase.database.Reference;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.authRef = firebase.auth();
@@ -31,6 +31,7 @@ export class UsersComponent implements OnInit {
             var u = data.val();
             u.uid = data.key;
             this.users.push(u);
+            this.cd.detectChanges();
           }
         });
       } else {

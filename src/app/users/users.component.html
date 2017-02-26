@@ -2,7 +2,8 @@
   <ul class="mdl-list">
     <li class="mdl-list__item mdl-list__item" *ngFor="let user of users">
       <span class="mdl-list__item-primary-content">
-        <img class="mdl-list__item-avatar" [src]="user.smallImageUrl" style="width: 48px; height: 48px;"/>
+        <img *ngIf="user.smallImageUrl" class="mdl-list__item-avatar" [src]="user.smallImageUrl" style="width: 48px; height: 48px;"/>
+        <img *ngIf="!user.smallImageUrl" class="mdl-list__item-avatar" style="width: 48px; height: 48px;"/>
         <span>{{ user.firstName }} {{ user.lastName }}</span>
       </span>
       <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent" routerLink="/messages/{{ user.uid }}">Chat</button>

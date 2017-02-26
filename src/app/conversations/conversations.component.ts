@@ -1,6 +1,8 @@
 import * as firebase from 'firebase';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+
+import { Observable } from 'rxjs/Rx';
 
 import { Conversation }      from './conversation';
 import { User }              from '../users/user';
@@ -17,7 +19,7 @@ export class ConversationsComponent implements OnInit {
   user: User;
   usersRef: firebase.database.Reference;
 
-  constructor() { }
+  constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.authRef = firebase.auth();
@@ -29,19 +31,23 @@ export class ConversationsComponent implements OnInit {
 
     this.authRef.onAuthStateChanged(user => {
       if(user) {
-        this.usersRef.child(user.uid).on('value', data => {
-          this.user = data.val();
+        this.usersRef.child(user.uid).on('value', snap => {
+          this.user = snap.val();
+          this.cd.detectChanges();
         });
-        this.conversationsRef.child(user.uid).orderByChild('timestamp').on('child_added', data => {
-          var convo = data.val();
-          convo.key = data.key;
+        var ref = this.conversationsRef.child(user.uid).orderByChild('timestamp');
+        Observable.fromEvent(ref, 'child_added').subscribe(snap => {
+          var convo = snap['val']();
+          convo.key = snap['key'];
           this.convos.unshift(convo);
+          this.cd.detectChanges();
         });
-        this.conversationsRef.child(user.uid).orderByChild('timestamp').on('child_changed', data => {
+        Observable.fromEvent(ref, 'child_changed').subscribe(snap => {
           for(var i = 0; i < this.convos.length; i++) {
-            if(data.key === this.convos[i].key) {
-              this.convos[i] = data.val();
-              this.convos[i].key = data.key;
+            if(snap['key'] === this.convos[i]['key']) {
+              this.convos[i] = snap['val']();
+              this.convos[i].key = snap['key'];
+              this.cd.detectChanges();
             }
           }
         });
@@ -49,6 +55,7 @@ export class ConversationsComponent implements OnInit {
         this.user = null;
         this.convos = [];
       }
+      this.cd.detectChanges();
     });
   }
 }
